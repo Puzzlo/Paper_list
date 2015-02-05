@@ -5,7 +5,9 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -13,11 +15,15 @@ public class MainActivity extends ActionBarActivity {
     String[] paper, glue;
     ArrayAdapter<String> lvAdapterPaper, lvAdapterGlue;
     ListView lvPaper, lvGlue;
+    TextView stroka;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+
+        stroka = (TextView) findViewById(R.id.inputString);
+        stroka.setText("formedeblement");
 
         // make adapter for paper
         paper = getResources().getStringArray(R.array.listOfPaper);
@@ -29,6 +35,8 @@ public class MainActivity extends ActionBarActivity {
         lvAdapterGlue = new ArrayAdapter<String>(this, R.layout.item_of_paper, glue);
         lvGlue = (ListView) findViewById(R.id.listGlue);
         lvGlue.setAdapter(lvAdapterGlue);
+
+
 
 
 
