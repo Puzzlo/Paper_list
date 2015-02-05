@@ -122,6 +122,25 @@
 
             </TableRow>
 
+            <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="50dp"
+                    android:text="0"
+                    android:id="@+id/button0" />
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="50dp"
+                    android:text="Ok"
+                    android:id="@+id/buttonOk" />
+            </TableRow>
+
         </TableLayout>
     </LinearLayout>
 
