@@ -1,5 +1,6 @@
 package com.puzzlo.paper_list;
 
+import android.os.Environment;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,6 +18,10 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+
 
 public class MainActivity extends ActionBarActivity implements AdapterView.OnItemClickListener {
 
@@ -28,8 +33,10 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
     ListView lvPaper, lvGlue;
     TextView stroka; // string on the bottom
     JSONObject jsonStroka = new JSONObject(); // json puts into file on disk
-    Button btn0, btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8, btn9, btnOk;
+    Button btn0, btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8, btn9, btnOk, btnSave;
     Float chislo; // number from keyboard
+    final String DIR_SD = "FilesForPaper";
+    final String FILENAME_SD = "filePaper.json";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,18 +71,13 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
         btn8 = (Button) findViewById(R.id.button8);
         btn9 = (Button) findViewById(R.id.button9);
         btnOk = (Button) findViewById(R.id.buttonOk);
-
-
+        btnSave = (Button) findViewById(R.id.btnSave);
 
 
         registerListeners();
 
 
-
-
-
     }
-
 
 
     private void registerListeners() {
@@ -83,67 +85,67 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
         btn0.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                chislo = chislo*10;
+                chislo = chislo * 10;
             }
         });
         btn1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                chislo = chislo*10+1;
+                chislo = chislo * 10 + 1;
             }
         });
         btn2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                chislo = chislo*10+2;
+                chislo = chislo * 10 + 2;
             }
         });
         btn3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                chislo = chislo*10+3;
+                chislo = chislo * 10 + 3;
             }
         });
         btn4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                chislo = chislo*10+4;
+                chislo = chislo * 10 + 4;
             }
         });
         btn5.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                chislo = chislo*10+5;
+                chislo = chislo * 10 + 5;
             }
         });
         btn6.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                chislo = chislo*10+6;
+                chislo = chislo * 10 + 6;
             }
         });
         btn7.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                chislo = chislo*10+7;
+                chislo = chislo * 10 + 7;
             }
         });
         btn8.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                chislo = chislo*10+8;
+                chislo = chislo * 10 + 8;
             }
         });
         btn9.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                chislo = chislo*10+9;
+                chislo = chislo * 10 + 9;
             }
         });
         btnOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(jsonStroka.has("shirina")) {
+                if (jsonStroka.has("shirina")) {
                     try {
                         jsonStroka.put("dlina", chislo);
                         Log.d(LOG, String.valueOf(jsonStroka));
@@ -151,8 +153,7 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                }
-                else {
+                } else {
                     try {
                         jsonStroka.put("shirina", chislo);
                         Log.d(LOG, String.valueOf(jsonStroka));
@@ -162,6 +163,13 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
                     }
 
                 }
+            }
+        });
+        btnSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(MainActivity.this, "кабутабы записали", Toast.LENGTH_SHORT).show();
+                writeFileSD(jsonStroka);
             }
         });
 
@@ -196,11 +204,13 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         switch (parent.getId()) {
             case R.id.listPaper:
-               // Toast.makeText(MainActivity.this, "paper = "+ paper[position], Toast.LENGTH_SHORT).show();
+                // Toast.makeText(MainActivity.this, "paper = "+ paper[position], Toast.LENGTH_SHORT).show();
+                jsonStroka = new JSONObject();
                 stroka.setText("");
                 stroka.setText(paper[position]);
                 try {
                     jsonStroka.put("paper", paper[position]);
+                    Log.d(LOG, String.valueOf(jsonStroka));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -210,14 +220,45 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
                 stroka.setText(stroka.getText() + "    " + glue[position]);
                 try {
                     jsonStroka.put("glue", glue[position]);
+                    Log.d(LOG, String.valueOf(jsonStroka));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
                 break;
             default:
-                Toast.makeText(MainActivity.this, "чота не то нажали, нажмите то (view  = "+ view+")", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "чота не то нажали, нажмите то (view  = " + view + ")", Toast.LENGTH_SHORT).show();
                 break;
         }
 
+    }
+
+    void writeFileSD(JSONObject jsonString) {
+        File sdFile;
+        // проверяем доступность SD
+        if (!Environment.getExternalStorageState().equals(
+                Environment.MEDIA_MOUNTED)) {
+            Toast.makeText(MainActivity.this, "SD-карта не доступна: " + Environment.getExternalStorageState(), Toast.LENGTH_LONG).show();
+            Log.d(LOG, "SD-карта не доступна: " + Environment.getExternalStorageState());
+            return;
+        }
+        // get path to SD
+        File sdPath = Environment.getExternalStorageDirectory();
+        //make path to catalogue
+        sdPath = new File(sdPath.getAbsolutePath() + "/" + DIR_SD);
+        if(!sdPath.isDirectory()) {
+            sdPath.mkdirs();
+            sdFile = new File( sdPath, FILENAME_SD);
+        }
+        else {
+            sdFile = new File( sdPath, FILENAME_SD);
+        }
+        try {
+            FileWriter fl = new FileWriter(sdFile, true);
+            fl.write(jsonString.toString() + "\n");
+            fl.flush();
+            fl.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
