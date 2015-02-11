@@ -33,10 +33,12 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
     ListView lvPaper, lvGlue;
     TextView stroka; // string on the bottom
     JSONObject jsonStroka = new JSONObject(); // json puts into file on disk
-    Button btn0, btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8, btn9, btnOk, btnSave;
+    Button btn0, btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8, btn9;
+    Button btnOk, btnSave, btnPoint;
     Float chislo; // number from keyboard
     final String DIR_SD = "FilesForPaper";
     final String FILENAME_SD = "filePaper.json";
+    Boolean point = false; // button Point pressed ?
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +74,7 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
         btn9 = (Button) findViewById(R.id.button9);
         btnOk = (Button) findViewById(R.id.buttonOk);
         btnSave = (Button) findViewById(R.id.btnSave);
+        btnPoint = (Button) findViewById(R.id.buttonPoint);
 
 
         registerListeners();
@@ -145,19 +148,24 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
         btnOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(point) chislo /= 10F;
                 if (jsonStroka.has("shirina")) {
                     try {
                         jsonStroka.put("dlina", chislo);
+                        stroka.setText(stroka.getText() + "   " + chislo.toString() + "км");
                         Log.d(LOG, String.valueOf(jsonStroka));
                         chislo = 0F;
+                        point = false;
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                 } else {
                     try {
                         jsonStroka.put("shirina", chislo);
+                        stroka.setText(stroka.getText() + "   " + chislo.toString() + "мм");
                         Log.d(LOG, String.valueOf(jsonStroka));
                         chislo = 0F;
+                        point = false;
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -168,8 +176,14 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(MainActivity.this, "кабутабы записали", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "записано", Toast.LENGTH_SHORT).show();
                 writeFileSD(jsonStroka);
+            }
+        });
+        btnPoint.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                point = true;
             }
         });
 
